@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Virtual environment (uv)
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb~
+
+# MLflow experiment tracking
+mlruns/
+mlartifacts/
+
+# Trained model artifacts (track metadata/JSON, not binaries)
+models/*.joblib
+models/*.pkl
+models/*.h5
+models/*.pt
+models/*.onnx
+
+# Generated reports (Evidently)
+reports/
+
+# Dagster storage
+storage/
+$DAGSTER_HOME/
+.dagster/
+
+# Data files at root level only (duplicates of data/ directory)
+/Computer_Durability.csv
+/Computer_Durability_Plus.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mlops-pipeline"
+version = "0.1.0"
+description = "End-to-end MLOps pipeline: Dagster + MLflow + Evidently + FastAPI + Gradio"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # Orchestration
+    "dagster>=1.9.0",
+    "dagster-webserver>=1.9.0",
+    # ML
+    "scikit-learn>=1.5.0",
+    "xgboost>=2.1.0",
+    "optuna>=3.6.0",
+    "imbalanced-learn>=0.12.0",
+    # Experiment tracking
+    "mlflow>=2.15.0",
+    # Monitoring / drift
+    "evidently>=0.4.33",
+    # Serving
+    "fastapi>=0.112.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.8.0",
+    # Frontend
+    "gradio>=4.42.0",
+    "requests>=2.32.0",
+    # Data
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "scipy>=1.14.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ipykernel>=6.29.0",
+    "jupyter>=1.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mlops_pipeline"]
+
+[tool.dagster]
+module_name = "mlops_pipeline.definitions"
