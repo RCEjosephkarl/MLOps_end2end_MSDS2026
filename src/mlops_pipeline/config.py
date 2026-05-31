@@ -5,8 +5,8 @@ ROOT = Path(__file__).parent.parent.parent  # project root: src/mlops_pipeline/ 
 
 # ── Data ──────────────────────────────────────────────────────────────────────
 DATA_RAW_DIR = ROOT / "data" / "raw"
-ORIG_CSV = DATA_RAW_DIR / "Computer_Durability.csv"
-PLUS_CSV = DATA_RAW_DIR / "Computer_Durability_Plus.csv"
+ORIG_CSV = ROOT / "Computer_Durability.csv"
+PLUS_CSV = ROOT / "Computer_Durability_Plus.csv"
 
 FEATURE_COLS = [
     "Hours Used Per Day",
