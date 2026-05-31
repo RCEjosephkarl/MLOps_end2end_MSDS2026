@@ -1,0 +1,22 @@
+{
+  "winner": "XGBoost",
+  "run_id": "222e3e5354e24caa80b6addf170c7739",
+  "registry_version": 1,
+  "metrics": {
+    "roc_auc": 0.8413560591871138,
+    "avg_precision": 0.28931499498300856,
+    "f1": 0.3764705882352941
+  },
+  "all_metrics": {
+    "RandomForest": {
+      "roc_auc": 0.8269807079977524,
+      "avg_precision": 0.24554784524827208,
+      "f1": 0.3140495867768595
+    },
+    "XGBoost": {
+      "roc_auc": 0.8413560591871138,
+      "avg_precision": 0.28931499498300856,
+      "f1": 0.3764705882352941
+    }
+  }
+}
