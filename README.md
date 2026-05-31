@@ -1,18 +1,15 @@
-<<<<<<< HEAD
 ---
 title: MLOps End2end MSDS2026
-emoji: 🏆
-colorFrom: purple
-colorTo: gray
+emoji: 💻
+colorFrom: blue
+colorTo: green
 sdk: gradio
-sdk_version: 6.16.0
-python_version: '3.13'
+sdk_version: "4.42.0"
+python_version: "3.12"
 app_file: app.py
 pinned: false
 ---
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
-=======
 # MLOps End-to-End Pipeline — Computer Durability Classifier
 
 Predicts whether a computer **needs replacement** using a full MLOps stack:
@@ -82,36 +79,13 @@ uv run python scripts/synthesize_data.py
 
 ## Model Serving
 
-### Option A — Docker Compose (recommended)
+### Start FastAPI
 
 ```bash
-# Build images (first time, or after code changes)
-docker compose build
-
-# Start API + Gradio in the background
-docker compose up -d api gradio
-
-# Stop
-docker compose down
-```
-
-- FastAPI: `http://localhost:8000`
-- Gradio UI: `http://localhost:7860`
-- `HF_API_URL` is pre-configured in `docker-compose.yml` — no extra env setup needed.
-
-### Option B — Local (uv)
-
-```bash
-# Terminal 1
 uv run uvicorn serving.api:app --host 0.0.0.0 --port 8000 --reload
-
-# Terminal 2
-uv run python app.py
-# Opens http://localhost:7860
 ```
 
-### API Endpoints
-
+Endpoints:
 - `GET  /health` — liveness check
 - `GET  /info` — model version + metrics
 - `POST /predict` — single prediction
@@ -131,10 +105,12 @@ curl -X POST http://localhost:8000/predict \
   }'
 ```
 
-### Running Tests
+### Start Gradio Demo
 
 ```bash
-docker compose run --rm test
+# In a second terminal (API must be running on port 8000)
+uv run python app.py
+# Opens http://localhost:7860
 ```
 
 ### MLflow UI
@@ -149,10 +125,9 @@ uv run mlflow ui --backend-store-uri mlruns/
 ## Project Structure
 
 ```
+├── Computer_Durability.csv          # Original 999-row dataset
+├── Computer_Durability_Plus.csv     # Augmented 2,999-row dataset (generated)
 ├── app.py                           # Gradio frontend (HF Spaces–ready)
-├── Dockerfile                       # Multi-service image (api, gradio, test)
-├── docker-compose.yml               # Orchestrates api (8000), gradio (7860), test services
-├── .dockerignore                    # Excludes venv, cache, mlruns from build context
 ├── pyproject.toml                   # uv/pip project + dependencies
 ├── .python-version                  # Python 3.12
 │
@@ -175,9 +150,7 @@ uv run mlflow ui --backend-store-uri mlruns/
 ├── models/                          # Trained model artifacts (generated)
 ├── reports/                         # Evidently HTML reports (generated)
 ├── mlruns/                          # MLflow tracking store (generated)
-└── data/raw/
-    ├── Computer_Durability.csv      # Original 999-row dataset
-    └── Computer_Durability_Plus.csv # Augmented 2,999-row dataset (generated)
+└── data/raw/                        # Raw CSV copies
 ```
 
 ---
@@ -216,4 +189,3 @@ The `app.py` at the project root is already structured for Hugging Face Spaces:
 1. Push the repo to HF
 2. Set `HF_API_URL` as a Space secret pointing to your deployed FastAPI instance
 3. Spaces will auto-launch `app.py`
->>>>>>> c1e8f69 (Initial commit: end-to-end MLOps pipeline project)

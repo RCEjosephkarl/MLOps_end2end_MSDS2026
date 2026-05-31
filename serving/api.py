@@ -43,8 +43,7 @@ def _load_artifacts() -> None:
     if META_PATH.exists():
         meta = json.loads(META_PATH.read_text())
         _feature_cols = meta["feature_cols"]
-        scaler_path = MODELS_DIR / Path(meta["scaler_path"]).name
-        _scaler = joblib.load(scaler_path)
+        _scaler = joblib.load(meta["scaler_path"])
     else:
         raise RuntimeError("feature_meta.json not found — run the Dagster pipeline first.")
 

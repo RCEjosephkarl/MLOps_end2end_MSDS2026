@@ -8,7 +8,7 @@ so Evidently can detect it:
   - Class rate ~7% positive (up from 5%), still realistic
 
 The synthesized rows are appended to the original data and saved as
-Computer_Durability_Plus.csv at data/raw/.
+Computer_Durability_Plus.csv at the project root.
 """
 from __future__ import annotations
 
@@ -98,13 +98,8 @@ def synthesize(n: int, rng: random.Random) -> list[list]:
 def main() -> None:
     rng = random.Random(SEED)
 
-    data_raw = ROOT / "data" / "raw"
-    src = data_raw / "Computer_Durability.csv"
-    dst = data_raw / "Computer_Durability_Plus.csv"
-
-    if dst.exists():
-        print(f"Already exists, skipping synthesis → {dst}")
-        return
+    src = ROOT / "Computer_Durability.csv"
+    dst = ROOT / "Computer_Durability_Plus.csv"
 
     orig_rows = []
     with src.open(encoding="utf-8-sig") as f:
