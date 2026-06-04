@@ -1,3 +1,15 @@
+---
+title: MLOps End2end MSDS2026
+emoji: 💻
+colorFrom: blue
+colorTo: green
+sdk: gradio
+sdk_version: "4.42.0"
+python_version: "3.12"
+app_file: app.py
+pinned: false
+---
+
 # MLOps End-to-End Pipeline — Computer Durability Classifier
 
 Predicts whether a computer **needs replacement** using a full MLOps stack:
