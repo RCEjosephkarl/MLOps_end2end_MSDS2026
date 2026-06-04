@@ -134,8 +134,6 @@ uv run mlflow ui --backend-store-uri mlruns/
 ## Project Structure
 
 ```
-├── Computer_Durability.csv          # Original 999-row dataset
-├── Computer_Durability_Plus.csv     # Augmented 2,999-row dataset (generated)
 ├── app.py                           # Gradio frontend (HF Spaces–ready)
 ├── Dockerfile                       # Multi-service image (api, gradio, test)
 ├── docker-compose.yml               # Orchestrates api (8000), gradio (7860), test services
@@ -162,7 +160,9 @@ uv run mlflow ui --backend-store-uri mlruns/
 ├── models/                          # Trained model artifacts (generated)
 ├── reports/                         # Evidently HTML reports (generated)
 ├── mlruns/                          # MLflow tracking store (generated)
-└── data/raw/                        # Raw CSV copies
+└── data/raw/
+    ├── Computer_Durability.csv      # Original 999-row dataset
+    └── Computer_Durability_Plus.csv # Augmented 2,999-row dataset (generated)
 ```
 
 ---
