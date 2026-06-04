@@ -45,3 +45,9 @@ packages = ["src/mlops_pipeline"]
 
 [tool.dagster]
 module_name = "mlops_pipeline.definitions"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+]

@@ -1,0 +1,22 @@
+services:
+  api:
+    build: .
+    container_name: computer-durability-api
+    ports:
+      - "8000:8000"
+
+  gradio:
+    build: .
+    container_name: computer-durability-gradio
+    command: python app.py
+    ports:
+      - "7860:7860"
+    environment:
+      - HF_API_URL=http://api:8000
+    depends_on:
+      - api
+
+  test:
+    build: .
+    container_name: computer-durability-test
+    command: python -m pytest --cov=. --cov-report=term-missing

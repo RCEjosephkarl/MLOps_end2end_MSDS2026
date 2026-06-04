@@ -1,22 +1,22 @@
 {
   "winner": "XGBoost",
-  "run_id": "222e3e5354e24caa80b6addf170c7739",
-  "registry_version": 1,
+  "run_id": "3762884ab4aa4f078c0d0401b66d1d3b",
+  "registry_version": 2,
   "metrics": {
-    "roc_auc": 0.8413560591871138,
-    "avg_precision": 0.28931499498300856,
-    "f1": 0.3764705882352941
+    "roc_auc": 0.8364394081288631,
+    "avg_precision": 0.31431814690182236,
+    "f1": 0.3142857142857143
   },
   "all_metrics": {
     "RandomForest": {
-      "roc_auc": 0.8269807079977524,
-      "avg_precision": 0.24554784524827208,
+      "roc_auc": 0.8275426109758381,
+      "avg_precision": 0.2461959995218337,
       "f1": 0.3140495867768595
     },
     "XGBoost": {
-      "roc_auc": 0.8413560591871138,
-      "avg_precision": 0.28931499498300856,
-      "f1": 0.3764705882352941
+      "roc_auc": 0.8364394081288631,
+      "avg_precision": 0.31431814690182236,
+      "f1": 0.3142857142857143
     }
   }
 }

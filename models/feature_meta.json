@@ -8,5 +8,5 @@
     "Computer Age (Months)"
   ],
   "target_col": "Needs Replacement",
-  "scaler_path": "/home/karl-joseph-cacao/Documents/MSDS2026/Term_04/MLOps_MSDS2026/MLOps_end2end_MSDS2026/models/scaler.joblib"
+  "scaler_path": "/Users/daren/Documents/MLOps/MLOps_end2end_MSDS2026/models/scaler.joblib"
 }
