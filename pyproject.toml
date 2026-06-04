@@ -25,7 +25,8 @@ dependencies = [
     "uvicorn[standard]>=0.30.0",
     "pydantic>=2.8.0",
     # Frontend
-    "gradio>=4.42.0",
+    "gradio==4.42.0",
+    "huggingface-hub<1.0",
     "requests>=2.32.0",
     # Data
     "pandas>=2.2.0",
