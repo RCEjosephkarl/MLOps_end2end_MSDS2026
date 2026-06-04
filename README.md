@@ -38,10 +38,52 @@ Predicts whether a computer **needs replacement** using a full MLOps stack:
 
 ---
 
-## Setup
+## Quickstart with Docker (Windows / macOS / Linux)
+
+Zero local Python needed — only **Docker Desktop**. Works identically on every OS.
 
 ```bash
-# 1. Create venv with Python 3.12 and install all dependencies
+docker compose build                 # build the shared image (first time)
+docker compose up api gradio         # trains the model, then serves API + UI
+```
+
+Then open:
+- Gradio UI → http://localhost:7860
+- FastAPI docs → http://localhost:8000/docs
+- MLflow UI → `docker compose --profile tools up mlflow` → http://localhost:5000
+
+> `api` **depends on `pipeline`**, so bringing it up runs the full training
+> pipeline first — the scaler/model artifacts it loads at startup always exist.
+> Artifacts persist on the host via bind mounts.
+>
+> Re-running `up` retrains. To serve an **already-trained** model without
+> retraining: `docker compose run --rm --service-ports --no-deps api`.
+> To train without serving: `docker compose run --rm pipeline`.
+
+**Convenience shortcuts** (same commands, less typing):
+
+| Task | macOS / Linux / WSL | Windows PowerShell |
+|---|---|---|
+| Build image | `make build` | `.\make.ps1 build` |
+| Train pipeline | `make train` | `.\make.ps1 train` |
+| Serve API + UI | `make serve` | `.\make.ps1 serve` |
+| MLflow UI | `make mlflow` | `.\make.ps1 mlflow` |
+| Run tests | `make test` | `.\make.ps1 test` |
+| Stop everything | `make down` | `.\make.ps1 down` |
+
+### VS Code Dev Container (optional)
+
+With the **Dev Containers** extension + Docker Desktop, open the repo and choose
+**"Reopen in Container"**. You get a fully provisioned Python 3.12 environment
+(deps installed, ports 3000/5000/7860/8000 forwarded, Python/Ruff/Jupyter
+extensions) with no local Python install. See `.devcontainer/devcontainer.json`.
+
+---
+
+## Local Setup (without Docker)
+
+```bash
+# Create venv with Python 3.12 and install all dependencies
 uv venv --python 3.12
 uv pip install -e ".[dev]"
 ```
@@ -82,19 +124,33 @@ uv run python scripts/synthesize_data.py
 ### Option A — Docker Compose (recommended)
 
 ```bash
-# Build images (first time, or after code changes)
+# Build the shared image (first time, or after code changes)
 docker compose build
 
-# Start API + Gradio in the background
+# Train + serve in the background (api triggers the pipeline automatically)
 docker compose up -d api gradio
 
 # Stop
 docker compose down
 ```
 
+| Service | Command | Port | Notes |
+|---|---|---|---|
+| `pipeline` | `docker compose run --rm pipeline` | — | runs automatically before `api` |
+| `api` | `docker compose up api` | 8000 | depends on `pipeline` |
+| `gradio` | `docker compose up gradio` | 7860 | depends on `api` |
+| `mlflow` | `docker compose --profile tools up mlflow` | 5000 | profile `tools` |
+| `test` | `docker compose run --rm test` | — | profile `test` |
+
 - FastAPI: `http://localhost:8000`
 - Gradio UI: `http://localhost:7860`
 - `HF_API_URL` is pre-configured in `docker-compose.yml` — no extra env setup needed.
+- `mlflow` and `test` use compose **profiles**, so a bare `docker compose up` only
+  starts `pipeline` → `api` → `gradio`.
+- Serve an already-trained model without retraining:
+  `docker compose run --rm --service-ports --no-deps api`.
+- `models/`, `reports/`, `mlruns/`, and `data/` are bind-mounted, so artifacts the
+  pipeline produces are visible to the API and MLflow and persist on the host.
 
 ### Option B — Local (uv)
 
@@ -147,9 +203,13 @@ uv run mlflow ui --backend-store-uri mlruns/
 
 ```
 ├── app.py                           # Gradio frontend (HF Spaces–ready)
-├── Dockerfile                       # Multi-service image (api, gradio, test)
-├── docker-compose.yml               # Orchestrates api (8000), gradio (7860), test services
+├── Dockerfile                       # Single multi-purpose image (all services)
+├── docker-compose.yml               # pipeline / api / gradio / mlflow / test services
 ├── .dockerignore                    # Excludes venv, cache, mlruns from build context
+├── .devcontainer/devcontainer.json  # VS Code Dev Container (Python 3.12)
+├── Makefile                         # Command shortcuts (macOS/Linux/WSL)
+├── make.ps1                         # Command shortcuts (Windows PowerShell)
+├── .gitattributes                   # LF normalization for cross-platform containers
 ├── pyproject.toml                   # uv/pip project + dependencies
 ├── .python-version                  # Python 3.12
 │

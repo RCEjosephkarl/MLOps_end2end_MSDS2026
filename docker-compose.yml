@@ -1,22 +1,81 @@
+# One image, many services. Built once (mlops-pipeline:latest) and reused.
+#
+# Common commands (work identically on Linux / macOS / Windows Docker Desktop):
+#   docker compose build                      # build the shared image
+#   docker compose up api gradio              # train (auto) + serve API + Gradio UI
+#   docker compose run --rm pipeline          # train only: writes models/ reports/ mlruns/
+#   docker compose --profile tools up mlflow  # MLflow UI (5000)
+#   docker compose run --rm test              # run the test suite
+#   docker compose down                       # stop everything
+#
+# `api` depends_on `pipeline` (service_completed_successfully): bringing up the
+# API trains the model first, so the artifacts it loads always exist. Bind mounts
+# persist those artifacts to the host. Re-running `up` retrains — if you want to
+# serve an existing model without retraining, start the API directly:
+#   docker compose run --rm --service-ports --no-deps api
+
+x-app: &app
+  build: .
+  image: mlops-pipeline:latest
+  volumes:
+    - ./data:/app/data
+    - ./models:/app/models
+    - ./reports:/app/reports
+    - ./mlruns:/app/mlruns
+
 services:
+  # ── Train ──────────────────────────────────────────────────────────────
+  # Runs the full Dagster asset pipeline, then exits. One-off:
+  #   docker compose run --rm pipeline
+  pipeline:
+    <<: *app
+    container_name: mlops-pipeline
+    command: python scripts/run_pipeline.py
+
+  # ── Serve: FastAPI prediction endpoint ─────────────────────────────────
+  # Gated on `pipeline`: starting the API trains the model first, so the
+  # scaler/model artifacts it loads at startup always exist.
   api:
-    build: .
-    container_name: computer-durability-api
+    <<: *app
+    container_name: mlops-api
+    command: uvicorn serving.api:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
+  # ── Frontend: Gradio UI ─────────────────────────────────────────────────
   gradio:
-    build: .
-    container_name: computer-durability-gradio
+    <<: *app
+    container_name: mlops-gradio
     command: python app.py
     ports:
       - "7860:7860"
     environment:
       - HF_API_URL=http://api:8000
     depends_on:
-      - api
+      api:
+        condition: service_healthy
 
+  # ── MLflow tracking UI ──────────────────────────────────────────────────
+  mlflow:
+    <<: *app
+    container_name: mlops-mlflow
+    command: mlflow ui --backend-store-uri file:///app/mlruns --host 0.0.0.0 --port 5000
+    ports:
+      - "5000:5000"
+    profiles: ["tools"]
+
+  # ── Test runner ─────────────────────────────────────────────────────────
   test:
-    build: .
-    container_name: computer-durability-test
+    <<: *app
+    container_name: mlops-test
     command: python -m pytest --cov=. --cov-report=term-missing
+    profiles: ["test"]
