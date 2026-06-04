@@ -102,6 +102,10 @@ def main() -> None:
     src = data_raw / "Computer_Durability.csv"
     dst = data_raw / "Computer_Durability_Plus.csv"
 
+    if dst.exists():
+        print(f"Already exists, skipping synthesis → {dst}")
+        return
+
     orig_rows = []
     with src.open(encoding="utf-8-sig") as f:
         reader = csv.reader(f)
