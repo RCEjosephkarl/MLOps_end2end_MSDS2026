@@ -15,7 +15,7 @@ import os
 import gradio as gr
 import requests
 
-API_URL = os.getenv("HF_API_URL", "http://localhost:8000")
+API_URL = os.getenv("HF_API_URL", "https://huggingface.co/spaces/madchavez/MLOps_end2end_MSDS2026:8000")
 
 PRIMARY_USAGE_MAP = {
     "Work / Productivity (1)": 1,
