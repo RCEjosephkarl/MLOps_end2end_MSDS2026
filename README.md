@@ -67,13 +67,36 @@ uv run python scripts/synthesize_data.py
 
 ## Model Serving
 
-### Start FastAPI
+### Option A — Docker Compose (recommended)
 
 ```bash
-uv run uvicorn serving.api:app --host 0.0.0.0 --port 8000 --reload
+# Build images (first time, or after code changes)
+docker compose build
+
+# Start API + Gradio in the background
+docker compose up -d api gradio
+
+# Stop
+docker compose down
 ```
 
-Endpoints:
+- FastAPI: `http://localhost:8000`
+- Gradio UI: `http://localhost:7860`
+- `HF_API_URL` is pre-configured in `docker-compose.yml` — no extra env setup needed.
+
+### Option B — Local (uv)
+
+```bash
+# Terminal 1
+uv run uvicorn serving.api:app --host 0.0.0.0 --port 8000 --reload
+
+# Terminal 2
+uv run python app.py
+# Opens http://localhost:7860
+```
+
+### API Endpoints
+
 - `GET  /health` — liveness check
 - `GET  /info` — model version + metrics
 - `POST /predict` — single prediction
@@ -93,12 +116,10 @@ curl -X POST http://localhost:8000/predict \
   }'
 ```
 
-### Start Gradio Demo
+### Running Tests
 
 ```bash
-# In a second terminal (API must be running on port 8000)
-uv run python app.py
-# Opens http://localhost:7860
+docker compose run --rm test
 ```
 
 ### MLflow UI
@@ -116,6 +137,9 @@ uv run mlflow ui --backend-store-uri mlruns/
 ├── Computer_Durability.csv          # Original 999-row dataset
 ├── Computer_Durability_Plus.csv     # Augmented 2,999-row dataset (generated)
 ├── app.py                           # Gradio frontend (HF Spaces–ready)
+├── Dockerfile                       # Multi-service image (api, gradio, test)
+├── docker-compose.yml               # Orchestrates api (8000), gradio (7860), test services
+├── .dockerignore                    # Excludes venv, cache, mlruns from build context
 ├── pyproject.toml                   # uv/pip project + dependencies
 ├── .python-version                  # Python 3.12
 │
