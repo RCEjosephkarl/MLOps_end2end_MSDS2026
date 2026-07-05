@@ -1,15 +1,3 @@
----
-title: Computer Durability Classifier: An MLOps Pipeline
-emoji: 💻
-colorFrom: blue
-colorTo: green
-sdk: gradio
-sdk_version: "4.42.0"
-python_version: "3.12"
-app_file: app.py
-pinned: false
----
-
 # Computer Durability Classifier: An MLOps Pipeline
 
 **Altonaga, Cacao, Chavez, Zumel** — MSDS 2026  
